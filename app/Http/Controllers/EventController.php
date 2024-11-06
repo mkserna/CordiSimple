@@ -14,6 +14,13 @@ class EventController extends Controller
         return view('events.index', compact("events")); // Retorna la vista 'events.index' con la lista de eventos.
     }
     
+
+    // Método para mostrar el formulario de creación de un nuevo evento.
+    public function create()
+    {
+        return view('events.create'); // Retorna la vista 'events.create' para crear un nuevo evento.
+    }
+
     // Método para almacenar un nuevo evento en la base de datos.
     public function store(EventRequest $request)
     {
@@ -23,6 +30,13 @@ class EventController extends Controller
 
         // Redirige a la lista de eventos con un mensaje de éxito.
         return redirect()->route('events.index')->with('success', 'Evento creado exitosamente.');
+    }
+
+    // Método para mostrar el formulario de edición de un evento.
+    public function edit(string $id)
+    {
+        $event = Event::findOrFail($id); // Busca el evento por su id; si no se encuentra, genera un error 404.
+        return view('events.edit', compact('event')); // Retorna la vista 'events.edit' con los datos del evento.
     }
 
     // Método para actualizar un evento existente en la base de datos.
