@@ -23,4 +23,23 @@ class EventController extends Controller
         // Redirige a la lista de eventos con un mensaje de éxito.
         return redirect()->route('events.index')->with('success', 'Evento creado exitosamente.');
     }
+
+    // Método para mostrar el formulario de edición de un evento.
+    public function edit(string $id)
+    {
+        $event = Event::findOrFail($id); // Busca el evento por su id; si no se encuentra, genera un error 404.
+        return view('events.edit', compact('event')); // Retorna la vista 'events.edit' con los datos del evento.
+    }
+
+    // Método para actualizar un evento existente en la base de datos.
+    public function update(EventRequest $request, string $id)
+    {
+        $validatedData = $request->validated(); // Valida los datos recibidos usando EventRequest.
+
+        $event = Event::findOrFail($id); // Busca el evento por su id; si no se encuentra, genera un error 404.
+        $event->update($validatedData); // Actualiza el evento con los datos validados.
+
+        // Redirige a la lista de eventos con un mensaje de éxito.
+        return redirect()->route('events.index')->with('success', 'Evento actualizado exitosamente.');
+    }
 }
