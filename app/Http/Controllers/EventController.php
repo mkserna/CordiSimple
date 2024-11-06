@@ -42,4 +42,14 @@ class EventController extends Controller
         // Redirige a la lista de eventos con un mensaje de éxito.
         return redirect()->route('events.index')->with('success', 'Evento actualizado exitosamente.');
     }
+
+    // Método para eliminar un evento de la base de datos.
+    public function destroy(string $id)
+    {
+        $event = Event::find($id); // Busca el evento por su id.
+        $event->delete(); // Elimina el evento de la base de datos.
+        
+        // Redirige a la lista de eventos con un mensaje de éxito.
+        return redirect()->route("events.index")->with('success', 'Evento eliminado con éxito.');
+    }
 }
