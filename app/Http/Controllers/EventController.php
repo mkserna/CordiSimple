@@ -13,6 +13,13 @@ class EventController extends Controller
         $events = Event::all(); // Obtiene todos los eventos de la base de datos.
         return view('events.index', compact("events")); // Retorna la vista 'events.index' con la lista de eventos.
     }
+
+    // Método para mostrar los detalles de un evento específico.
+    public function show(string $id)
+    {
+        $event = Event::findOrFail($id); // Busca el evento por su id; si no se encuentra, genera un error 404.
+        return view('events.show', compact("event")); // Retorna la vista 'events.show' con los detalles del evento.
+    }
     
     // Método para almacenar un nuevo evento en la base de datos.
     public function store(EventRequest $request)
