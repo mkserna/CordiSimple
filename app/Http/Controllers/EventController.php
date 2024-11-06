@@ -7,6 +7,12 @@ use App\Http\Requests\EventRequest;
 
 class EventController extends Controller
 {
+    // Método para mostrar el formulario de creación de un nuevo evento.
+    public function create()
+    {
+        return view('events.create'); // Retorna la vista 'events.create' para crear un nuevo evento.
+    }
+
     // Método para almacenar un nuevo evento en la base de datos.
     public function store(EventRequest $request)
     {
