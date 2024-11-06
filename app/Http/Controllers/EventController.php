@@ -7,6 +7,13 @@ use App\Http\Requests\EventRequest;
 
 class EventController extends Controller
 {
+    // Método para mostrar una lista de todos los eventos.
+    public function index()
+    {
+        $events = Event::all(); // Obtiene todos los eventos de la base de datos.
+        return view('events.index', compact("events")); // Retorna la vista 'events.index' con la lista de eventos.
+    }
+    
     // Método para almacenar un nuevo evento en la base de datos.
     public function store(EventRequest $request)
     {
