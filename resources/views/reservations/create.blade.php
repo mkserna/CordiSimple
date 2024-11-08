@@ -17,7 +17,6 @@
                     <p class="text-gray-500"><strong>Fecha de finalización:</strong><span class="text-gray-300">{{ $event->date_end }}</span></p>
                     <p class="text-gray-500"><strong>Ubicación:</strong> <span class="text-gray-300">{{ $event->location }}</span></p>
                 </div>
-
                 <!-- Mostrar detalles de la reserva (usuario) -->
                 <div class="mb-4">
                     <p class="text-xl font-semibold text-yellow-500 mb-2">Detalles de tu Reserva:</p>
