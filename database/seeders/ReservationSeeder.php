@@ -28,7 +28,7 @@ class ReservationSeeder extends Seeder
 
         Reservation::create([
             'status' => true,
-            'user_id' => 4, // Usuario 3
+            'user_id' => 3, // Usuario 3
             'event_id' => 5, // Evento 3
         ]);
     }
