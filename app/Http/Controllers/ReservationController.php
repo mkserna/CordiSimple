@@ -59,4 +59,62 @@ class ReservationController extends Controller
         // Redirigir o mostrar un mensaje de éxito
         return redirect()->route('reservations.index')->with('success', 'Reserva confirmada exitosamente.');
     }
+
+    //Vista para editar la reservacion
+    public function edit(string $id)
+    {
+        // Verificar que el usuario esté logueado
+        if (!Auth::check()) {
+            return redirect()->back()->withErrors(['login' => 'Debes estar logueado para editar una reserva.'])->withInput();
+        }
+
+        // Buscar la reserva usando el ID pasado
+        $reservation = Reservation::findOrFail($id);
+
+        // Verificar si el usuario es el propietario de la reserva o un administrador
+        $user = Auth::user();
+        if ($user->rols_id != 1 && $reservation->user_id != $user->id) {
+            return redirect()->back()->withErrors(['unauthorized' => 'No tienes permiso para editar esta reserva.']);
+        }
+
+        // Obtener todos los eventos activos para mostrarlos en el formulario de edición
+        $events = Event::where('status', 1)->get();
+
+        // Pasar la reserva y los eventos a la vista de edición
+        return view('reservations.edit', compact('reservation', 'events'));
+    }
+
+
+    //Actualizar reservacion
+    public function update(Request $request, string $id)
+    {
+        // Validar que el usuario esté logueado
+        if (!Auth::check()) {
+            return redirect()->back()->withErrors(['login' => 'Debes estar logueado para actualizar una reserva.'])->withInput();
+        }
+
+        // Buscar la reserva usando el ID pasado
+        $reservation = Reservation::findOrFail($id);
+
+        // Verificar si el usuario es el propietario de la reserva o un administrador
+        $user = Auth::user();
+        if ($user->rols_id != 1 && $reservation->user_id != $user->id) {
+            return redirect()->back()->withErrors(['unauthorized' => 'No tienes permiso para actualizar esta reserva.']);
+        }
+
+        // Validar los datos recibidos
+        $validated = $request->validate([
+            'event_id' => 'required|exists:events,id',
+            'status' => 'required|boolean', // Aseguramos que status sea booleano
+        ]);
+
+        // Actualizar los campos de la reserva
+        $reservation->update([
+            'event_id' => $validated['event_id'],
+            'status' => $validated['status'],
+        ]);
+
+        // Redirigir a la vista de reservas con un mensaje de éxito
+        return redirect()->route('reservations.index')->with('success', 'Reserva actualizada exitosamente.');
+    }
 }
