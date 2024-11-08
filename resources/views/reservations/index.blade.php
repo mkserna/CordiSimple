@@ -1,75 +1,47 @@
 @extends('layouts.personal')
 
 @section('content')
+
 <body class="bg-black">
-    
-    <div class="container mx-auto py-8">
-        <h1 class="text-3xl font-bold text-center text-yellow-500 mb-6">Editar Reserva</h1>
+    <h1 class="text-3xl font-bold text-center text-yellow-500 mb-6">Lista de reservas</h1>
 
-        <div class="shadow-md rounded-lg overflow-hidden">
-            <div class="px-8 py-8">
-                <!-- Mostrar detalles del evento -->
-                <div class="mb-4">
-                    <p class="text-xl font-semibold text-yellow-500 mb-2">Detalles del Evento:</p>
-                    <p class="text-gray-500"><strong>Nombre del Evento:</strong><span class="text-gray-300">{{ $reservation->event->name }}</span></p>
-                    <p class="text-gray-500"><strong>Descripción:</strong> <span class="text-gray-300">{{ $reservation->event->description }}</span></p>
-                    <p class="text-gray-500"><strong>Fecha de inicio:</strong><span class="text-gray-300">{{ $reservation->event->date_start }}</span></p>
-                    <p class="text-gray-500"><strong>Fecha de finalización:</strong><span class="text-gray-300">{{ $reservation->event->date_end }}</span></p>
-                    <p class="text-gray-500"><strong>Ubicación:</strong> <span class="text-gray-300">{{ $reservation->event->location }}</span></p>
-                </div>
-
-                <!-- Mostrar detalles de la reserva (usuario) -->
-                <div class="mb-4">
-                    <p class="text-xl font-semibold text-yellow-500 mb-2">Detalles de tu Reserva:</p>
-                    <p class="text-gray-700"><strong>Usuario:</strong><span class="text-gray-300">{{ $reservation->user->name }}</span></p>
-                    <p class="text-gray-700"><strong>Correo:</strong> <span class="text-gray-300">{{ $reservation->user->email }}</span></p>
-                </div>
-
-                <!-- Formulario de edición de reserva -->
-                <form action="{{ route('reservations.update', $reservation->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-
-                    <div class="mb-4">
-                        <label for="event_id" class="text-gray-500"><strong>Seleccionar Evento:</strong></label>
-                        <select name="event_id" id="event_id" class="text-gray-300 bg-gray-700 border-none rounded w-full p-2">
-                            @foreach($events as $event)
-                                <option value="{{ $event->id }}" {{ $reservation->event_id == $event->id ? 'selected' : '' }}>
-                                    {{ $event->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="status" class="text-gray-500"><strong>Estado de la Reserva:</strong></label>
-                        <select name="status" id="status" class="text-gray-300 bg-gray-700 border-none rounded w-full p-2">
-                            <option value="1" {{ $reservation->status == 1 ? 'selected' : '' }}>Confirmado</option>
-                            <option value="0" {{ $reservation->status == 0 ? 'selected' : '' }}>Cancelado</option>
-                        </select>
-                    </div>
-
-                    <div class="flex justify-end">
-                        <a href="{{ route('reservations.index') }}" class="text-white px-4 py-2 rounded hover:bg-gray-600 mr-2">Cancelar</a>
-                        <button type="submit" class="text-white px-4 py-2 rounded hover:bg-yellow-500">Actualizar Reserva</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    {{-- Modal para mensajes de error de login --}}
+    {{-- Mostrar el mensaje de error de login si existe --}}
     @if ($errors->has('login'))
-        <div id="login-error-modal" class="fixed inset-0 flex items-center justify-center z-50" style="background-color: rgba(0, 0, 0, 0.5);">
-            <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
-                <h2 class="text-lg font-bold text-red-700">Error</h2>
-                <p class="mt-2 text-gray-700">{{ $errors->first('login') }}</p>
-                <div class="mt-4 flex justify-between">
-                    <button onclick="document.getElementById('login-error-modal').style.display='none'" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Permanecer sin loguear</button>
-                    <a href="{{ route('login') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Loguearme</a>
-                </div>
-            </div>
+        <div class="max-w-7xl mx-auto mb-4 p-4 bg-red-500 text-white rounded-lg shadow-md flex items-center justify-between">
+            <p class="text-lg font-semibold">{{ $errors->first('login') }}</p>
+            <button onclick="this.parentElement.style.display='none'" class="text-xl font-bold">&times;</button>
         </div>
     @endif
-@endsection
+
+    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+        {{-- Aquí ya estamos recorriendo las reservas filtradas --}}
+        @forelse($reservations as $reservation)
+            <div class="shadow-md rounded-lg p-4 mb-6">
+                <!-- Mostrar detalles de la reserva -->
+                <h2 class="text-lg font-bold text-yellow-500">{{ $reservation->event->name }}</h2>
+                <p class="text-white">{{ ucfirst($reservation->event->description) }}</p>
+                <p class="text-gray-500">Fecha de inicio: <span class="text-white">{{ $reservation->event->date_start }}</span></p>
+                <p class="text-gray-500">Fecha de finalización: <span class="text-white">{{ $reservation->event->date_end }}</span></p>
+                <p class="text-gray-500">Ubicación: <span class="text-white">{{ $reservation->event->location }}</span></p>
+                <p class="text-gray-500">Capacidad: <span class="text-white">{{ $reservation->event->max_slots }}</span></p>
+                <p class="text-gray-500">Estado: <span class="text-white">{{ $reservation->event->status ? 'activo' : 'inactivo' }}</span></p>
+                <p class="text-gray-500">Tu estado de reserva: <span class="text-white">{{ $reservation->status ? 'Confirmado' : 'Pendiente' }}</span></p>
+
+                {{-- Mostrar el botón de cancelar solo si es el propietario de la reserva o si es admin --}}
+                @if (auth()->user()->rols_id == 1 || auth()->user()->id === $reservation->user_id)
+                    <form action="{{ route('reservations.destroy', $reservation->id) }}" method="POST" class="mt-4">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-white px-4 py-2 rounded bg-red-500 hover:bg-red-600">
+                            Cancelar Reserva
+                        </button>
+                    </form>
+                @endif
+            </div>
+        @empty
+        <div class="flex items-center justify-center h-full text-center text-gray-500">No tienes reservas realizadas.</div>
+        @endforelse
+    </div>
+
 </body>
+@endsection
