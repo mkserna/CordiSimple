@@ -117,4 +117,26 @@ class ReservationController extends Controller
         // Redirigir a la vista de reservas con un mensaje de éxito
         return redirect()->route('reservations.index')->with('success', 'Reserva actualizada exitosamente.');
     }
+
+    public function destroy($id)
+    {
+        // Encontrar la reserva por ID
+        $reservation = Reservation::find($id);
+
+        // Verificar si la reserva existe
+        if (!$reservation) {
+            return redirect()->route('reservations.index')->with('error', 'La reserva no existe.');
+        }
+
+        // Verificar si el usuario actual tiene permiso para eliminar la reserva
+        if (Auth::user()->rols_id != 1 && Auth::user()->id != $reservation->user_id) {
+            return redirect()->route('reservations.index')->with('error', 'No tienes permiso para eliminar esta reserva.');
+        }
+
+        // Eliminar la reserva
+        $reservation->delete();
+
+        // Redirigir con un mensaje de éxito
+        return redirect()->route('reservations.index')->with('success', 'Reserva eliminada exitosamente.');
+    }
 }
