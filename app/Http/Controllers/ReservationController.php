@@ -33,7 +33,6 @@ class ReservationController extends Controller
         return view('reservations.index', compact('reservations'));
     }
 
-
     public function create($event_id)
     {
         // Buscar el evento usando el ID pasado
