@@ -20,8 +20,8 @@ class Event extends Model
         'status'
     ];
 
-    // public function reservation(): HasMany
-    // {
-    //     return $this->hasMany(Reservation::class, 'event_id', 'id');
-    // }
+    public function reservation(): HasMany
+    {
+        return $this->hasMany(Reservation::class, 'event_id', 'id');
+    }
 }
