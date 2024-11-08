@@ -35,9 +35,8 @@ class NewReservationNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                ->subject('New Reservation Notification')
+                ->view('emails.new_reservation', ['notifiable' => $notifiable]);
     }
 
     /**
